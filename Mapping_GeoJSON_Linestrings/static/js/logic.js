@@ -40,20 +40,32 @@ let baseMaps = {
 let map = L.map('mapid', {
     center: [43.7, -79.3],
     zoom: 11,
-    layers: [sateliteStreets]
+    layers: [streets]
 })
 
 // Pass our map layers into our layers control and add the layers control to the map.
 L.control.layers(baseMaps).addTo(map);
 
 // Accessing the Toronto neighborhoods GeoJSON URL.
-let torontoHoods = "https://raw.githubusercontent.com/kermitbravo/Mapping_Earthquakes/main/torontoNeighborhoods.json";
+let torontoHoods = "https://raw.githubusercontent.com/kermitbravo/Mapping_Earthquakes/Mapping_GeoJSON_Linestrings/torontoNeighborhoods.json";
 
 // Grabbing our GeoJSON data.
 d3.json(torontoHoods).then(function (data) {
     console.log(data);
     // Creating a GeoJSON layer with the retrieved data.
-    L.geoJson(data).addTo(map);
+    L.geoJson(data,
+        {
+            style: function (feature) {
+                return {
+                    color: "#ffffa1",
+                    weight: 1
+                };
+            },
+            onEachFeature: function (features, layer) {
+                layer.bindPopup("<h3>" + features.properties.AREA_NAME + "</h3> <hr> <h2>" + features.properties.AREA_S_CD + "</h2>")
+            }
+        }
+    ).addTo(map);
 });
 
 
